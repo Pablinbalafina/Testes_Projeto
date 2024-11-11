@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 def validar_string(valor, campo):
     if not isinstance(valor, str) or not valor.strip():
@@ -28,3 +29,13 @@ def validar_campos_preenchidos(**campos):
         if not valor:
             return False, f"O campo {campo} é obrigatório."
     return True, ""
+
+def validar_data(data, campo):
+    try:
+        # Tenta converter o valor para um objeto de data
+        datetime.strptime(data, "%Y-%m-%d")  # Formato esperado: YYYY-MM-DD
+    except ValueError:
+        # Se ocorrer um erro, a data não é válida
+        return False, f"O campo {campo} deve conter uma data válida no formato YYYY-MM-DD."
+    
+    return True, ""  # Se a conversão for bem-sucedida, retorna True

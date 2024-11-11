@@ -32,6 +32,7 @@ class Medicamentos(Base):
     # Adicionando __repr__ para facilitar a visualização dos objetos
     def __repr__(self):
         return f"<Medicamento(id={self.id}, nome={self.nome}, principio_ativo={self.principio_ativo})>"
+    
 
 # Configuração do banco de dados
 DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
@@ -41,5 +42,8 @@ engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 session = Session()
 
+def get_session():
+    return Session()  
 # Criando as tabelas no banco de dados
 Base.metadata.create_all(engine)
+
