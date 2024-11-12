@@ -17,6 +17,9 @@ class ViewFarmaceutico():
 
         
     def criar_interface_farmaceutico(self):
+        for widget in self.janela.winfo_children():
+            widget.destroy()
+            
         self.frame = ctk.CTkFrame(self.janela, border_width=3, border_color="#00CED1", fg_color="white")
         self.frame.place(relx=0.5, rely=0.5, anchor='center', relwidth=0.5, relheight=0.7)
         
@@ -34,16 +37,11 @@ class ViewFarmaceutico():
         
         self.botao_mostrar_tabela = ctk.CTkButton(self.frame, text="Mostrar Tabela", command=self.mostrar_tabela)
         self.botao_mostrar_tabela.grid(row=4, column=0, columnspan=2, padx=0, pady=0, sticky='ew')
-    
-        
-        
-        
+        self.janela.update()
+     
     
     def mostrar_tabela(self):
-        for widget in self.janela.winfo_children():
-            widget.destroy()
-            
-        self.janela.withdraw()  # Esconde a janela de login
+        self.janela.withdraw()     
         self.janela_tabela = ctk.CTkToplevel(self.janela)
         self.janela_tabela.title("Tabela de medicamentos")
         self.janela_tabela.geometry(f"{self.janela.winfo_screenwidth()}x{self.janela.winfo_screenheight()}+0+0")
@@ -52,7 +50,7 @@ class ViewFarmaceutico():
         self.janela_tabela.grid_rowconfigure(2, weight=1)
 
         # Título
-        self.label_titulo = ctk.CTkLabel(self.janela, text="Lista de Pacientes", font=("Arial", 24, "bold"))
+        self.label_titulo = ctk.CTkLabel(self.janela_tabela, text="Lista de Pacientes", font=("Arial", 24, "bold"))  # Corrigido para usar self.janela_tabela
         self.label_titulo.grid(row=0, column=0, pady=20, sticky="ew")
 
         # Frame para filtros
@@ -71,35 +69,50 @@ class ViewFarmaceutico():
         style.configure("Treeview", font=("Arial", 12))
 
         for col in colunas:
-            self.frame_tabela.heading(col, text=col, anchor="center")
-            self.frame_tabela.column(col, anchor="center", width=150)
+            self.tabela.heading(col, text=col, anchor="center")
+            self.tabela.column(col, anchor="center", width=150)
 
-        self.frame_tabela.column("Nome", width=200)
-        self.frame_tabela.column("Email", width=200)
-        self.frame_tabela.column("Endereço", width=300)
+        self.tabela.column("Nome", width=200)
+        self.tabela.column("Principio ativo", width=200)
+        self.tabela.column("Forma farmaceutica", width=300)
 
-        self.frame_tabela.tag_configure('evenrow', background='#E8E8E8')
-        self.frame_tabela.tag_configure('oddrow', background='#FFFFFF')
+        self.tabela.tag_configure('evenrow', background='#E8E8E8')
+        self.tabela.tag_configure('oddrow', background='#FFFFFF')
 
-        self.frame_tabela.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
+        self.tabela.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
 
         # Scrollbars
-        scrollbar_y = ttk.Scrollbar(self.janela, orient="vertical", command=self.frame_tabela.yview)
+        scrollbar_y = ttk.Scrollbar(self.janela_tabela, orient="vertical", command=self.tabela.yview)  # Corrigido para usar self.janela_tabela
         scrollbar_y.grid(row=2, column=1, sticky="ns")
 
-        scrollbar_x = ttk.Scrollbar(self.janela, orient="horizontal", command=self.frame_tabela.xview)
+        scrollbar_x = ttk.Scrollbar(self.janela_tabela, orient="horizontal", command=self.tabela.xview)  # Corrigido para usar self.janela_tabela
         scrollbar_x.grid(row=3, column=0, sticky="ew")
 
-        self.frame_tabela.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+        self.tabela.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
 
         # Frame para botões
         self.frame_acoes = ctk.CTkFrame(self.janela_tabela)
         self.frame_acoes.grid(row=4, column=0, padx=20, pady=10, sticky="ew")
 
-        self.botao_voltar = ctk.CTkButton(self.frame_acoes, text="Voltar", font=("Arial", 16, "bold"), width=150, height=40, command=self.exibir_tela_recepcionista)
+        self.botao_voltar = ctk.CTkButton(self.frame_acoes, text="Voltar", font=("Arial", 16, "bold"), width=150, height=40, command=self.voltar_para_janela_principal)
         self.botao_voltar.pack(side="right", padx=5)
+        self.preencher_tabela_medicamentos()  # Chama o método para preencher a tabela
 
+    def preencher_tabela_medicamentos(self):
+        # Limpa a tabela antes de adicionar novos dados
+        for i in self.tabela.get_children():
+            self.tabela.delete(i)
 
+        # Obtém a lista de medicamentos da model
+        medicamentos = self.controller.ver_medicamentos()  # Supondo que este método exista no controller
+
+        # Adiciona os medicamentos à tabela
+        for medicamento in medicamentos:
+            self.tabela.insert("", "end", values=(medicamento.nome, medicamento.principio_ativo, medicamento.forma_farmaceutica, medicamento.validade))
+
+    def voltar_para_janela_principal(self):
+       self.janela_tabela.withdraw()
+       self.janela.deiconify()
         
 
     
