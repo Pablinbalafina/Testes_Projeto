@@ -41,9 +41,9 @@ DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 session = Session()
+Base.metadata.create_all(engine)
 
 def get_session():
     return Session()  
 # Criando as tabelas no banco de dados
-Base.metadata.create_all(engine)
 

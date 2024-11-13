@@ -32,7 +32,7 @@ class ViewFarmaceutico():
         self.botao_ver_medicamentos = ctk.CTkButton(self.frame, text="Ver medicamentos", command=self.controller.ver_medicamentos, width=100, height=30)
         self.botao_ver_medicamentos.grid(column=0, row=2, columnspan=2, padx=100 , pady=0, sticky='ew')  # Adicionando o botão à interface
         
-        self.botao_adicionar_medicamentos = ctk.CTkButton(self.frame, text="Adicionar medicamentos", command=self.controller.adicionar_medicamento, width=100, height=30)
+        self.botao_adicionar_medicamentos = ctk.CTkButton(self.frame, text="Adicionar medicamentos", command=self.tela_adicionar_medicamento, width=100, height=30)
         self.botao_adicionar_medicamentos.grid(column=0, row=3, columnspan=2, padx=100, pady=0, sticky="ew")
         
         self.botao_mostrar_tabela = ctk.CTkButton(self.frame, text="Mostrar Tabela", command=self.mostrar_tabela)
@@ -113,6 +113,50 @@ class ViewFarmaceutico():
     def voltar_para_janela_principal(self):
        self.janela_tabela.withdraw()
        self.janela.deiconify()
+       
+    def tela_adicionar_medicamento(self):
+        self.janela.withdraw()
+        self.janela_adicionar = ctk.CTkToplevel(self.janela)
+        self.janela_adicionar.title("Adicionar Medicamento")
+        self.janela_adicionar.geometry(f"{self.janela.winfo_screenwidth()}x{self.janela.winfo_screenheight()}+0+0")
+
+        # Campos para entrada de dados
+        self.label_nome = ctk.CTkLabel(self.janela_adicionar, text="Nome:")
+        self.label_nome.pack(pady=5)
+        self.entry_nome = ctk.CTkEntry(self.janela_adicionar)
+        self.entry_nome.pack(pady=5)
+
+        self.label_principio = ctk.CTkLabel(self.janela_adicionar, text="Princípio Ativo:")
+        self.label_principio.pack(pady=5)
+        self.entry_principio = ctk.CTkEntry(self.janela_adicionar)
+        self.entry_principio.pack(pady=5)
+
+        self.label_forma = ctk.CTkLabel(self.janela_adicionar, text="Forma Farmacêutica:")
+        self.label_forma.pack(pady=5)
+        self.entry_forma = ctk.CTkEntry(self.janela_adicionar)
+        self.entry_forma.pack(pady=5)
+
+        self.label_validade = ctk.CTkLabel(self.janela_adicionar, text="Validade:")
+        self.label_validade.pack(pady=5)
+        self.entry_validade = ctk.CTkEntry(self.janela_adicionar)
+        self.entry_validade.pack(pady=5)
+
+        self.botao_salvar = ctk.CTkButton(self.janela_adicionar, text="Salvar", command=self.salvar_medicamento)
+        self.botao_salvar.pack(pady=20)
+
+    def salvar_medicamento(self):
+        nome = self.entry_nome.get()
+        principio_ativo = self.entry_principio.get()
+        forma_farmaceutica = self.entry_forma.get()
+        validade = self.entry_validade.get()
+        
+        
+        
+
+        # Chama o método do controller para adicionar o medicamento
+        self.controller.adicionar_medicamento(nome, principio_ativo, forma_farmaceutica, validade)
+        self.preencher_tabela_medicamentos()  # Atualiza a tabela
+
         
 
     

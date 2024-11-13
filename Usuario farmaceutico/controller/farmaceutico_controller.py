@@ -12,8 +12,9 @@ class FarmaceuticoController:
     def ver_medicamentos(self):
         return self.session.query(Medicamentos).all()
     
-    def adicionar_medicamento(self, medicamento):
-        self.model.session.add(medicamento)
+    def adicionar_medicamento(self, nome, principio_ativo, forma_farmaceutica, validade):
+        novo_medicamento = Medicamentos(nome=nome, principio_ativo=principio_ativo, forma_farmaceutica=forma_farmaceutica, validade=validade)
+        self.model.session.add(novo_medicamento)
         self.model.session.commit()
     
     
